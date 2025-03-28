@@ -6,10 +6,10 @@ from dash.dependencies import Input, Output
 from twilio.rest import Client
 
 # Twilio credentials (replace with your actual credentials)
-TWILIO_SID = "ACae94609e7397a9ca34fd938f6efaf256"
-TWILIO_AUTH_TOKEN = "219bef0c23cce3dabde58686789e6e6d"
+TWILIO_SID = os.getenv("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_ACCOUNT_AUTH_TOKEN")
 TWILIO_WHATSAPP_NUMBER = "whatsapp:+14155238886"
-PHARMACY_WHATSAPP_NUMBER = "whatsapp:+233539681341"
+PHARMACY_WHATSAPP_NUMBER = "whatsapp:your_pharmacy_number"
 
 
 
