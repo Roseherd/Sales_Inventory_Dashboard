@@ -10,7 +10,7 @@ import os
 # Twilio credentials (replace with your actual credentials)
 TWILIO_SID = os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.getenv("TWILIO_ACCOUNT_AUTH_TOKEN")
-TWILIO_WHATSAPP_NUMBER = "whatsapp:+14155238886"
+TWILIO_WHATSAPP_NUMBER = "whatsapp:twilio_whatsapp_number"
 PHARMACY_WHATSAPP_NUMBER = "whatsapp:your_pharmacy_number"
 
 # Function to create inventory component
