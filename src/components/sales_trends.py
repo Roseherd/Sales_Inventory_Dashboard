@@ -3,7 +3,7 @@ import plotly.express as px
 from dash import dcc, html, Input, Output, dash_table
 
 # Load sales data
-sales_data = pd.read_csv("../data/daily_sales.csv", parse_dates=["DATE"])
+sales_data = pd.read_csv("data/daily_sales.csv", parse_dates=["DATE"])
 
 def sales_trend_component():
     return html.Div([

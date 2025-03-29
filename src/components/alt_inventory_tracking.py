@@ -80,7 +80,7 @@ def inventory_component():
 
 # Function to load inventory data
 def load_inventory_data():
-    file_path = '../data/cleaned_inventory.csv'
+    file_path = 'data/cleaned_inventory.csv'
     if os.path.exists(file_path):
         inventory_data = pd.read_csv(file_path)
         if inventory_data.empty:
@@ -96,7 +96,7 @@ def load_inventory_data():
 
 # Function to predict reorder dates
 def predict_reorder_dates(lead_time=1):
-    sales_data = pd.read_csv('../data/cleaned_sales.csv')
+    sales_data = pd.read_csv('data/cleaned_sales.csv')
     inventory_data = load_inventory_data()
     
     reorder_predictions = []

@@ -3,7 +3,7 @@ import plotly.express as px
 from dash import dcc, html, Input, Output, dash_table
 
 # Load forecasted sales data
-forecast_data = pd.read_csv("../data/forecasted_sales.csv", parse_dates=["DATE"])
+forecast_data = pd.read_csv("data/forecasted_sales.csv", parse_dates=["DATE"])
 
 def forecast_component():
     return html.Div([
