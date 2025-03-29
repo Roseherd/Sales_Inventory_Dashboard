@@ -58,7 +58,7 @@ def inventory_component():
 
 # Function to load inventory data
 def load_inventory_data():
-    file_path = 'C:/Users/Hp/VSCode_Files/Sales_Inventory_Analysis/data/cleaned_inventory.csv'
+    file_path = '../data/cleaned_inventory.csv'
     
     if os.path.exists(file_path):
         inventory_data = pd.read_csv(file_path)  # Load inventory data
@@ -116,7 +116,7 @@ def send_whatsapp_alert(product_name, quantity_left):
 
 # Function to check for low stock and trigger WhatsApp alerts (max 10 messages)
 def check_low_stock():
-    file_path = 'C:/Users/Hp/VSCode_Files/Sales_Inventory_Analysis/data/cleaned_inventory.csv'
+    file_path = '../data/cleaned_inventory.csv'
     inventory_data = pd.read_csv(file_path)
 
     low_stock_threshold = 5  # Set your reorder threshold
