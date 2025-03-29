@@ -14,6 +14,10 @@ DAILY_SALES_FILE_URL = os.getenv("DAILY_SALES_FILE_URL")
 # Function to download files from URLs
 def download_file(url, local_path):
     """Download a file from a URL and save it locally."""
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(local_path), exist_ok=True)
+
+    # Download the file
     response = requests.get(url)
     if response.status_code == 200:
         with open(local_path, "wb") as f:
@@ -28,6 +32,7 @@ def load_sales_data():
     sales_data = pd.read_csv(local_sales_path, parse_dates=["DATE"])
     return sales_data
 
+# Preload sales data globally
 sales_data = load_sales_data()
 
 def sales_trend_component():

@@ -6,6 +6,7 @@ from dash.dependencies import Input, Output
 from twilio.rest import Client
 import plotly.express as px
 from dotenv import load_dotenv
+import requests
 
 # Load environment variables from .env file
 load_dotenv()
@@ -23,7 +24,10 @@ SALES_FILE_URL = os.getenv("SALES_FILE_URL")
 # Function to download files from URLs
 def download_file(url, local_path):
     """Download a file from a URL and save it locally."""
-    import requests
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(local_path), exist_ok=True)
+
+    # Download the file
     response = requests.get(url)
     if response.status_code == 200:
         with open(local_path, "wb") as f:
