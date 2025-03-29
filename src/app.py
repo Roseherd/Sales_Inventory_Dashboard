@@ -5,10 +5,26 @@ import plotly.express as px
 from components.sales_trends import sales_trend_component, register_sales_trend_callbacks
 from components.alt_inventory_tracking import inventory_component, register_inventory_callbacks
 from components.sales_forecasting import forecast_component, register_forecast_callbacks
+import dash_auth
+import json
+
+# Load credentials from config.json
+with open('config.json') as f:
+    config = json.load(f)
+
+VALID_USERNAME_PASSWORD_PAIRS = {
+    config['username']: config['password']
+}
 
 # Initialize Dash app
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 server = app.server
+
+# Basic Authentication
+auth = dash_auth.BasicAuth(
+    app,
+    VALID_USERNAME_PASSWORD_PAIRS
+)
 
 # Load Data
 sales_data = pd.read_csv("data/daily_sales.csv", parse_dates=["DATE"])
@@ -88,4 +104,4 @@ register_forecast_callbacks(app)
 # Run the app
 if __name__ == "__main__":
     app.run(debug=True)
-    
+
