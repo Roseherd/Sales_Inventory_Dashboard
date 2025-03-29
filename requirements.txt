@@ -2,5 +2,10 @@ dash==3.0.1
 pandas==2.2.3
 plotly==5.24.1
 twilio==9.5.0
-dash-tools
-gunicorn
+dash-tools==1.12.0
+visdcc==0.0.50
+packaging==21.3  
+gunicorn==20.1.0
+setuptools>=42
+wheel
+pyOpenSSL  
