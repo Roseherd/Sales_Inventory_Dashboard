@@ -14,5 +14,4 @@ docopt==0.6.2
 pyOpenSSL
 python-dotenv==1.0.0
 requests==2.31.
-json
 dash-auth==2.0.0
