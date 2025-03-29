@@ -1,9 +1,34 @@
 import pandas as pd
 import plotly.express as px
 from dash import dcc, html, Input, Output, dash_table
+from dotenv import load_dotenv
+import os
+import requests
+
+# Load environment variables from .env file
+load_dotenv()
+
+# File URL from environment variables
+DAILY_SALES_FILE_URL = os.getenv("DAILY_SALES_FILE_URL")
+
+# Function to download files from URLs
+def download_file(url, local_path):
+    """Download a file from a URL and save it locally."""
+    response = requests.get(url)
+    if response.status_code == 200:
+        with open(local_path, "wb") as f:
+            f.write(response.content)
+    else:
+        raise Exception(f"Failed to download file from {url}. Status code: {response.status_code}")
 
 # Load sales data
-sales_data = pd.read_csv("data/daily_sales.csv", parse_dates=["DATE"])
+def load_sales_data():
+    local_sales_path = "data/daily_sales.csv"
+    download_file(DAILY_SALES_FILE_URL, local_sales_path)  # Download from Google Drive
+    sales_data = pd.read_csv(local_sales_path, parse_dates=["DATE"])
+    return sales_data
+
+sales_data = load_sales_data()
 
 def sales_trend_component():
     return html.Div([
@@ -49,6 +74,9 @@ def register_sales_trend_callbacks(app):
         ]
     )
     def update_sales_trend(start_date, end_date):
+        # Reload sales data to ensure the latest file is used
+        sales_data = load_sales_data()
+
         # Filter data based on date range
         filtered_data = sales_data[(sales_data["DATE"] >= start_date) & (sales_data["DATE"] <= end_date)]
 

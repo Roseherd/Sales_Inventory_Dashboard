@@ -6,7 +6,51 @@ from components.sales_trends import sales_trend_component, register_sales_trend_
 from components.alt_inventory_tracking import inventory_component, register_inventory_callbacks
 from components.sales_forecasting import forecast_component, register_forecast_callbacks
 import dash_auth
+from dotenv import load_dotenv
+import os
+import requests
 import json
+
+# Load environment variables from .env file
+load_dotenv()
+
+# File URLs from environment variables
+INVENTORY_FILE_URL = os.getenv("INVENTORY_FILE_URL")
+SALES_FILE_URL = os.getenv("DAILY_SALES_FILE_URL")
+FORECAST_FILE_URL = os.getenv("FORECAST_FILE_URL")
+
+# Function to download files from URLs
+def download_file(url, local_path):
+    """Download a file from a URL and save it locally."""
+    response = requests.get(url)
+    if response.status_code == 200:
+        with open(local_path, "wb") as f:
+            f.write(response.content)
+    else:
+        raise Exception(f"Failed to download file from {url}. Status code: {response.status_code}")
+
+# Download and load data
+def load_data():
+    # Download inventory data
+    inventory_path = "data/cleaned_inventory.csv"
+    download_file(INVENTORY_FILE_URL, inventory_path)
+    inventory_data = pd.read_csv(inventory_path)
+
+    # Download sales data
+    sales_path = "data/daily_sales.csv"
+    download_file(SALES_FILE_URL, sales_path)
+    sales_data = pd.read_csv(sales_path, parse_dates=["DATE"])
+
+    # Download forecast data
+    forecast_path = "data/forecasted_sales.csv"
+    download_file(FORECAST_FILE_URL, forecast_path)
+    forecast_data = pd.read_csv(forecast_path)
+    forecast_data["DATE"] = pd.to_datetime(forecast_data["DATE"])
+
+    return inventory_data, sales_data, forecast_data
+
+# Load all data
+inventory_data, sales_data, forecast_data = load_data()
 
 # Load credentials from config.json
 with open('config.json') as f:
@@ -25,12 +69,6 @@ auth = dash_auth.BasicAuth(
     app,
     VALID_USERNAME_PASSWORD_PAIRS
 )
-
-# Load Data
-sales_data = pd.read_csv("data/daily_sales.csv", parse_dates=["DATE"])
-forecast_data = pd.read_csv("data/forecasted_sales.csv")
-forecast_data["DATE"] = pd.to_datetime(forecast_data["DATE"])
-inventory_data = pd.read_csv("data/cleaned_inventory.csv")
 
 # Sales Trend Plot
 fig_sales = px.line(sales_data, x="DATE", y="TOTAL AMOUNT", title="Daily Sales Trend")

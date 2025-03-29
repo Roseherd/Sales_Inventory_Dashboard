@@ -5,13 +5,31 @@ import os
 from dash.dependencies import Input, Output
 from twilio.rest import Client
 import plotly.express as px
-import os
+from dotenv import load_dotenv
 
-# Twilio credentials (replace with your actual credentials)
+# Load environment variables from .env file
+load_dotenv()
+
+# Twilio credentials from environment variables
 TWILIO_SID = os.getenv("TWILIO_ACCOUNT_SID")
-TWILIO_AUTH_TOKEN = os.getenv("TWILIO_ACCOUNT_AUTH_TOKEN")
-TWILIO_WHATSAPP_NUMBER = "whatsapp:twilio_whatsapp_number"
-PHARMACY_WHATSAPP_NUMBER = "whatsapp:your_pharmacy_number"
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+TWILIO_WHATSAPP_NUMBER = os.getenv("TWILIO_WHATSAPP_NUMBER")
+PHARMACY_WHATSAPP_NUMBER = os.getenv("PHARMACY_WHATSAPP_NUMBER")
+
+# File URLs from environment variables
+INVENTORY_FILE_URL = os.getenv("INVENTORY_FILE_URL")
+SALES_FILE_URL = os.getenv("SALES_FILE_URL")
+
+# Function to download files from URLs
+def download_file(url, local_path):
+    """Download a file from a URL and save it locally."""
+    import requests
+    response = requests.get(url)
+    if response.status_code == 200:
+        with open(local_path, "wb") as f:
+            f.write(response.content)
+    else:
+        raise Exception(f"Failed to download file from {url}. Status code: {response.status_code}")
 
 # Function to create inventory component
 def inventory_component():
@@ -80,13 +98,11 @@ def inventory_component():
 
 # Function to load inventory data
 def load_inventory_data():
-    file_path = 'data/cleaned_inventory.csv'
-    if os.path.exists(file_path):
-        inventory_data = pd.read_csv(file_path)
-        if inventory_data.empty:
-            raise ValueError("The inventory data file is empty.")
-    else:
-        raise FileNotFoundError(f"Inventory data file not found at {file_path}")
+    local_inventory_path = "data/cleaned_inventory.csv"
+    download_file(INVENTORY_FILE_URL, local_inventory_path)  # Download from Google Drive
+    inventory_data = pd.read_csv(local_inventory_path)
+    if inventory_data.empty:
+        raise ValueError("The inventory data file is empty.")
 
     reorder_threshold = 5
     inventory_data["Reorder Status"] = inventory_data["QUANTITY LEFT"].apply(
@@ -96,7 +112,9 @@ def load_inventory_data():
 
 # Function to predict reorder dates
 def predict_reorder_dates(lead_time=1):
-    sales_data = pd.read_csv('data/cleaned_sales.csv')
+    local_sales_path = "data/cleaned_sales.csv"
+    download_file(SALES_FILE_URL, local_sales_path)  # Download from Google Drive
+    sales_data = pd.read_csv(local_sales_path)
     inventory_data = load_inventory_data()
     
     reorder_predictions = []

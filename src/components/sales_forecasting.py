@@ -1,9 +1,35 @@
 import pandas as pd
 import plotly.express as px
 from dash import dcc, html, Input, Output, dash_table
+from dotenv import load_dotenv
+import os
+import requests
 
-# Load forecasted sales data
-forecast_data = pd.read_csv("data/forecasted_sales.csv", parse_dates=["DATE"])
+# Load environment variables from .env file
+load_dotenv()
+
+# File URL from environment variables
+FORECAST_FILE_URL = os.getenv("FORECAST_FILE_URL")
+
+# Function to download files from URLs
+def download_file(url, local_path):
+    """Download a file from a URL and save it locally."""
+    response = requests.get(url)
+    if response.status_code == 200:
+        with open(local_path, "wb") as f:
+            f.write(response.content)
+    else:
+        raise Exception(f"Failed to download file from {url}. Status code: {response.status_code}")
+
+# Preload forecasted sales data once when the app starts
+def preload_forecast_data():
+    local_forecast_path = "data/forecasted_sales.csv"
+    download_file(FORECAST_FILE_URL, local_forecast_path)  # Download from Google Drive
+    forecast_data = pd.read_csv(local_forecast_path, parse_dates=["DATE"])
+    return forecast_data
+
+# Preload forecasted sales data globally
+forecast_data = preload_forecast_data()
 
 def forecast_component():
     return html.Div([
@@ -23,7 +49,7 @@ def forecast_component():
         # Forecast Graph
         dcc.Graph(id="forecast_graph", config={"doubleClick": "reset"}),  # Enable zoom reset on double-click
 
-        # Sales Data Table
+        # Forecast Data Table
         dash_table.DataTable(
             id='forecast-data-table',
             columns=[{"name": i, "id": i} for i in forecast_data.columns],
@@ -49,6 +75,9 @@ def register_forecast_callbacks(app):
         ]
     )
     def update_forecast(start_date, end_date):
+        # Use preloaded forecasted sales data instead of reloading it
+        global forecast_data
+
         # Filter data based on date range
         filtered_data = forecast_data[(forecast_data["DATE"] >= start_date) & (forecast_data["DATE"] <= end_date)]
 
