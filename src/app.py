@@ -11,10 +11,10 @@ app = dash.Dash(__name__, suppress_callback_exceptions=True)
 server = app.server
 
 # Load Data
-sales_data = pd.read_csv("C:/Users/Hp/VSCode_Files/Sales_Inventory_Analysis/data/daily_sales.csv", parse_dates=["DATE"])
-forecast_data = pd.read_csv("C:/Users/Hp/VSCode_Files/Sales_Inventory_Analysis/data/forecasted_sales.csv")
+sales_data = pd.read_csv("data/daily_sales.csv", parse_dates=["DATE"])
+forecast_data = pd.read_csv("data/forecasted_sales.csv")
 forecast_data["DATE"] = pd.to_datetime(forecast_data["DATE"])
-inventory_data = pd.read_csv("C:/Users/Hp/VSCode_Files/Sales_Inventory_Analysis/data/cleaned_inventory.csv")
+inventory_data = pd.read_csv("data/cleaned_inventory.csv")
 
 # Sales Trend Plot
 fig_sales = px.line(sales_data, x="DATE", y="TOTAL AMOUNT", title="Daily Sales Trend")
