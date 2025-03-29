@@ -9,7 +9,6 @@ import dash_auth
 from dotenv import load_dotenv
 import os
 import requests
-import json
 
 # Load environment variables from .env file
 load_dotenv()
@@ -56,12 +55,12 @@ def load_data():
 # Load all data
 inventory_data, sales_data, forecast_data = load_data()
 
-# Load credentials from config.json
-with open('config.json') as f:
-    config = json.load(f)
+# Load credentials from environment variables
+DASH_USERNAME = os.getenv("DASH_USERNAME")
+DASH_PASSWORD = os.getenv("DASH_PASSWORD")
 
 VALID_USERNAME_PASSWORD_PAIRS = {
-    config['username']: config['password']
+    DASH_USERNAME: DASH_PASSWORD
 }
 
 # Initialize Dash app
